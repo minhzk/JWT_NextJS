@@ -1,10 +1,9 @@
-'use client'
-
+import AdminCard from "@/components/admin/admin.card";
 const DashboardPage = () => {
     return (
-        <>
-            Hello world!
-        </>
+        <div>
+            <AdminCard />
+        </div>
     )
 }
 
