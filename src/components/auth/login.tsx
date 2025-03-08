@@ -6,12 +6,9 @@ import { authenticate } from '@/utils/actions';
 
 const Login = () => {
     const onFinish = async (values: any) => {
-        console.log(">>> check values: ", values);
         const { email, password } = values
         // trigger sign-in
         const res = await authenticate(email, password)
-        console.log(">>> check res: ", res)
-        // await signIn("credentials", {email, password, redirect: false} )
     };
     return (
         <Row justify={'center'} style={{ marginTop: '30px' }}>
