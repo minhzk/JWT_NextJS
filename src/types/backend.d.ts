@@ -38,4 +38,8 @@ declare global {
         access_token: string;
     }
 
+    interface IRegister {
+        _id: string
+    }
+
 }

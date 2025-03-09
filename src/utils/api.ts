@@ -24,40 +24,20 @@ export const sendRequest = async <T>(props: IRequest) => { //type
         url = `${url}?${queryString.stringify(queryParams)}`;
     }
 
-    return fetch(url, options).then(async (res) => {
-        const json = await res.json();
-        
+    return fetch(url, options).then(res => {  
         if (res.ok) {
-            // 🔹 Kiểm tra xem response có đúng format IBackendRes không
-            if (json.hasOwnProperty("data") && json.hasOwnProperty("statusCode")) {
-                return json as T; // Dữ liệu đã đúng
-            } else {
-                // 🔹 Nếu không có `data`, giả định rằng API trả về trực tiếp kiểu T
-                return { data: json } as T;
-            }
+            return res.json() as T; //generic
         } else {
-            return {
-                statusCode: res.status,
-                message: json?.message ?? "",
-                error: json?.error ?? ""
-            } as T;
+            return res.json().then(function (json) {
+                // to be able to access error status when you catch the error 
+                return {
+                    statusCode: res.status,
+                    message: json?.message ?? "",
+                    error: json?.error ?? ""
+                } as T;
+            });
         }
     });
-
-    // return fetch(url, options).then(res => {  
-    //     if (res.ok) {
-    //         return res.json() as T; //generic
-    //     } else {
-    //         return res.json().then(function (json) {
-    //             // to be able to access error status when you catch the error 
-    //             return {
-    //                 statusCode: res.status,
-    //                 message: json?.message ?? "",
-    //                 error: json?.error ?? ""
-    //             } as T;
-    //         });
-    //     }
-    // });
 
     
 };

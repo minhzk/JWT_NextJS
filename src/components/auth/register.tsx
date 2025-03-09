@@ -3,9 +3,30 @@ import React from 'react';
 import { Button, Col, Divider, Form, Input, notification, Row } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { sendRequest } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 const Register = () => {
-    const onFinish = async (values: any) => {};
+    const router = useRouter()
+    const onFinish = async (values: any) => {
+        const {email, password, name} = values
+        const res = await sendRequest<IBackendRes<IRegister>>({
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/register`,
+            method: 'POST',
+            body: {
+                email, password, name
+            }
+        })
+        console.log(">>> check res: ", res)
+        if (res?.data) {
+            router.push(`/verify/${res?.data?._id}`)
+        } else {
+            notification.error({
+                message: 'Register error',
+                description: res?.message
+            })
+        }
+    };
     return (
         <Row justify={'center'} style={{ marginTop: '30px' }}>
             <Col xs={24} md={16} lg={8}>
@@ -36,7 +57,16 @@ const Register = () => {
                         >
                             <Input />
                         </Form.Item>
-                        <Form.Item label="Name" name="name">
+                        <Form.Item 
+                            label="Name" 
+                            name="name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your name!',
+                                },
+                        ]}
+                        >
                             <Input />
                         </Form.Item>
                         <Form.Item
